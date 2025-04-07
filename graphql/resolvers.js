@@ -8,27 +8,41 @@ const cloudinary = require('cloudinary').v2;
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 
-// Configure Razorpay
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET
-});
+// Configure Razorpay - only initialize if credentials are available
+let razorpay = null;
+if (process.env.RAZORPAY_KEY_ID && process.env.RAZORPAY_KEY_SECRET) {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET
+  });
+} else {
+  console.log('Razorpay credentials not found. Payment features will be disabled.');
+}
 
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-});
+// Configure Cloudinary - only initialize if credentials are available
+if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+  cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+  });
+} else {
+  console.log('Cloudinary credentials not found. Image upload features will be disabled.');
+}
 
-// Create email transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
-  }
-});
+// Create email transporter - only initialize if credentials are available
+let transporter = null;
+if (process.env.EMAIL_USER && process.env.EMAIL_PASSWORD) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASSWORD
+    }
+  });
+} else {
+  console.log('Email credentials not found. Email features will be disabled.');
+}
 
 const resolvers = {
   Query: {
@@ -137,6 +151,11 @@ const resolvers = {
 
         await user.save();
 
+        // Check if JWT_SECRET is available
+        if (!process.env.JWT_SECRET) {
+          throw new Error('Authentication service is not properly configured. Please contact support.');
+        }
+
         // Generate JWT token
         const token = jwt.sign(
           { userId: user._id },
@@ -190,6 +209,11 @@ const resolvers = {
         if (user.status !== 'active') {
           console.log('User account not active:', email);
           throw new Error('Account is not active');
+        }
+
+        // Check if JWT_SECRET is available
+        if (!process.env.JWT_SECRET) {
+          throw new Error('Authentication service is not properly configured. Please contact support.');
         }
 
         // Generate token
@@ -248,17 +272,30 @@ const resolvers = {
       const resetToken = user.generatePasswordResetToken();
       await user.save();
 
-      const resetUrl = `${process.env.FRONTEND_URL}/reset-password?token=${resetToken}`;
-      await transporter.sendMail({
-        to: user.email,
-        subject: 'Reset your EduVerse password',
-        html: `
-          <h1>Password Reset Request</h1>
-          <p>Click the link below to reset your password:</p>
-          <a href="${resetUrl}">Reset Password</a>
-          <p>This link will expire in 1 hour.</p>
-        `
-      });
+      // Check if FRONTEND_URL is available
+      if (!process.env.FRONTEND_URL) {
+        console.log('FRONTEND_URL not configured. Using default URL.');
+      }
+
+      const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
+      const resetUrl = `${frontendUrl}/reset-password?token=${resetToken}`;
+      
+      // Check if email service is configured
+      if (transporter) {
+        await transporter.sendMail({
+          to: user.email,
+          subject: 'Reset your EduVerse password',
+          html: `
+            <h1>Password Reset Request</h1>
+            <p>Click the link below to reset your password:</p>
+            <a href="${resetUrl}">Reset Password</a>
+            <p>This link will expire in 1 hour.</p>
+          `
+        });
+      } else {
+        console.log(`Password reset requested for ${user.email}. Reset URL: ${resetUrl}`);
+        // In a production environment, you might want to log this to a file or database
+      }
 
       return {
         success: true,
@@ -418,6 +455,11 @@ const resolvers = {
         throw new Error('Not authenticated');
       }
 
+      // Check if Razorpay is initialized
+      if (!razorpay) {
+        throw new Error('Payment service is not configured. Please contact support.');
+      }
+
       const options = {
         amount: amount * 100, // Razorpay expects amount in paise
         currency: 'INR',
@@ -440,6 +482,16 @@ const resolvers = {
     verifyPayment: async (_, { orderId, paymentId, signature }, context) => {
       if (!context.user) {
         throw new Error('Not authenticated');
+      }
+
+      // Check if Razorpay is initialized
+      if (!razorpay) {
+        throw new Error('Payment service is not configured. Please contact support.');
+      }
+
+      // Check if RAZORPAY_KEY_SECRET is available
+      if (!process.env.RAZORPAY_KEY_SECRET) {
+        throw new Error('Payment verification is not configured. Please contact support.');
       }
 
       const body = orderId + '|' + paymentId;
