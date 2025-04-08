@@ -539,6 +539,41 @@ const resolvers = {
         throw error;
       }
     },
+    initializeCourses: async (_, { courses }, context) => {
+      try {
+        // Check if user is authenticated and is admin
+        if (!context.user || context.user.role !== 'admin') {
+          throw new Error('Not authorized to initialize courses');
+        }
+
+        // Find or create a default teacher
+        let defaultTeacher = await User.findOne({ role: 'teacher' });
+        if (!defaultTeacher) {
+          defaultTeacher = await User.create({
+            name: 'Default Teacher',
+            email: 'teacher@eduvaverse.com',
+            password: 'hashedpassword', // In production, use proper password hashing
+            role: 'teacher'
+          });
+        }
+
+        const createdCourses = [];
+        for (const courseInput of courses) {
+          const course = await Course.create({
+            ...courseInput,
+            teacher: defaultTeacher._id,
+            students: [],
+            lectures: []
+          });
+          createdCourses.push(course);
+        }
+
+        return createdCourses;
+      } catch (error) {
+        console.error('Error initializing courses:', error);
+        throw new Error('Failed to initialize courses: ' + error.message);
+      }
+    },
   }
 };
 

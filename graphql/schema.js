@@ -102,10 +102,11 @@ const typeDefs = gql`
     class: Int!
     subject: String!
     isPremium: Boolean!
-    syllabus: [SyllabusItemInput!]!
+    price: Float
+    syllabus: [SyllabusInput!]
   }
 
-  input SyllabusItemInput {
+  input SyllabusInput {
     topic: String!
     description: String!
     duration: String!
@@ -150,6 +151,7 @@ const typeDefs = gql`
     resetPassword(token: String!, newPassword: String!): AuthPayload!
     updateProfile(input: ProfileInput!): User!
     createCourse(input: CourseInput!): Course!
+    initializeCourses(courses: [CourseInput!]!): [Course!]!
     enrollCourse(courseId: ID!): Course!
     addLecture(courseId: ID!, title: String!, videoUrl: String, pdfUrl: String): Lecture!
     updateProgress(lectureId: ID!): Progress!
