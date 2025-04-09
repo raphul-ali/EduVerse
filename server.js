@@ -11,7 +11,7 @@ const app = express();
 
 // CORS configuration
 app.use(cors({
-  origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com'],
+  origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com', 'https://edu-verse-sigma.vercel.app'],
   credentials: true
 }));
 
@@ -103,7 +103,11 @@ const server = new ApolloServer({
     };
   },
   playground: true,
-  introspection: true
+  introspection: true,
+  cors: {
+    origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com', 'https://edu-verse-sigma.vercel.app'],
+    credentials: true
+  }
 });
 
 // Start Apollo Server
