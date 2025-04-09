@@ -10,10 +10,14 @@ const jwt = require('jsonwebtoken');
 const app = express();
 
 // CORS configuration
-app.use(cors({
-  origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com'],
-  credentials: true
-}));
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com', 'https://edu-verse-sigma.vercel.app'],
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+};
+
+app.use(cors(corsOptions));
 
 // Add a simple route handler for the root path
 app.get('/', (req, res) => {
@@ -103,7 +107,8 @@ const server = new ApolloServer({
     };
   },
   playground: true,
-  introspection: true
+  introspection: true,
+  cors: corsOptions
 });
 
 // Start Apollo Server
@@ -112,10 +117,7 @@ async function startServer() {
   server.applyMiddleware({ 
     app,
     path: '/graphql',
-    cors: {
-      origin: ['http://localhost:3000', 'https://eduverse-2nmh.onrender.com'],
-      credentials: true
-    }
+    cors: corsOptions
   });
 
   const PORT = process.env.PORT || 5000;

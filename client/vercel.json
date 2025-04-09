@@ -27,5 +27,11 @@
   ],
   "buildCommand": "npm run build",
   "outputDirectory": "build",
-  "framework": "create-react-app"
+  "framework": "create-react-app",
+  "env": {
+    "REACT_APP_API_URL": "https://eduverse-2nmh.onrender.com/graphql",
+    "REACT_APP_RAZORPAY_KEY_ID": "rzp_test_ZnQz2g2A8JLRRq",
+    "REACT_APP_RAZORPAY_KEY_SECRET": "btZiRhHAZVTcS2oHGQY6Lrlz",
+    "GENERATE_SOURCEMAP": "false"
+  }
 } 
