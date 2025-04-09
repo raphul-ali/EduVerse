@@ -76,7 +76,3 @@ Create a `.env` file in the root directory with:
 MONGODB_URI=your_mongodb_uri
 JWT_SECRET=your_jwt_secret
 ```
-
-## License
-
-This project is licensed under the MIT License. 
