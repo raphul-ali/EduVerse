@@ -1,103 +1,82 @@
-# EduVerse - Online Learning Platform
+# EduVerse - Modern Educational Platform
 
-EduVerse is a modern online learning platform that combines video lectures, PDF materials, and progress tracking in a user-friendly interface. The platform supports role-based access (admin/teacher/student) and includes premium course features with payment integration.
+EduVerse is a comprehensive educational platform that connects students and teachers in a virtual learning environment. The platform facilitates course creation, enrollment, and interactive learning experiences.
 
-## Features
+## Live Demo
+[EduVerse Live Website](https://edu-verse-sigma.vercel.app)
 
-- Role-based authentication (admin/teacher/student)
-- Video lecture streaming (YouTube embed or AWS S3)
-- PDF reading without download option
-- Course progress tracking
-- Premium course access with payment gateway
-- Modern, responsive UI with Material-UI
+## Key Features
 
-## Tech Stack
+- **Role-Based Access Control**
+  - Separate interfaces for students and teachers
+  - Secure authentication and authorization
+  - Personalized dashboards
 
-- Frontend: React.js, Material-UI, Apollo Client
-- Backend: Node.js, Express, GraphQL
-- Database: MongoDB
-- Authentication: JWT
-- Payment Processing: Stripe
-- File Storage: AWS S3
+- **Course Management**
+  - Create and manage courses with detailed syllabi
+  - Course categorization by class and subject
+  - Premium and free course options
+  - Interactive course enrollment system
 
-## Prerequisites
+- **User Experience**
+  - Modern, responsive UI built with Material-UI
+  - Real-time updates and notifications
+  - Intuitive navigation and course discovery
+  - Mobile-friendly design
 
-- Node.js (v14 or higher)
-- MongoDB
-- AWS Account (for S3 storage)
-- Stripe Account (for payments)
+## Technical Stack
 
-## Installation
+- **Frontend**
+  - React.js with functional components
+  - Material-UI for modern UI components
+  - Apollo Client for GraphQL integration
+  - React Router for navigation
+  - Context API for state management
 
-1. Clone the repository:
-```bash
-git clone https://github.com/yourusername/eduverse.git
-cd eduverse
+- **Backend**
+  - Node.js with Express
+  - GraphQL API with Apollo Server
+  - MongoDB with Mongoose ODM
+  - JWT for authentication
+  - Secure password hashing with bcrypt
+
+- **Deployment**
+  - Vercel for frontend deployment
+  - Render for backend services
+  - MongoDB Atlas for database hosting
+
+## Project Highlights
+
+- Implemented secure authentication system with JWT
+- Developed real-time course management features
+- Created responsive UI with Material-UI components
+- Integrated GraphQL for efficient data fetching
+- Implemented role-based access control
+- Optimized for performance and scalability
+
+## Getting Started
+
+1. Clone the repository
+2. Install dependencies:
+   ```bash
+   npm install
+   cd client
+   npm install
+   ```
+3. Set up environment variables
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+## Environment Variables
+
+Create a `.env` file in the root directory with:
 ```
-
-2. Install backend dependencies:
-```bash
-npm install
+MONGODB_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
 ```
-
-3. Install frontend dependencies:
-```bash
-cd client
-npm install
-```
-
-4. Create a `.env` file in the root directory with the following variables:
-```
-PORT=5000
-MONGODB_URI=mongodb://localhost:27017/eduverse
-JWT_SECRET=your_jwt_secret_key
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_REGION=your_aws_region
-STRIPE_SECRET_KEY=your_stripe_secret_key
-```
-
-## Running the Application
-
-1. Start the backend server:
-```bash
-npm run dev
-```
-
-2. Start the frontend development server:
-```bash
-cd client
-npm start
-```
-
-The application will be available at:
-- Frontend: http://localhost:3000
-- Backend: http://localhost:5000
-
-## Project Structure
-
-```
-eduverse/
-├── client/                 # React frontend
-│   ├── src/
-│   │   ├── components/     # Reusable components
-│   │   ├── pages/         # Page components
-│   │   ├── apollo/        # Apollo Client configuration
-│   │   └── ...
-├── models/                 # MongoDB models
-├── graphql/               # GraphQL schema and resolvers
-├── middleware/            # Express middleware
-└── ...
-```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License. 
